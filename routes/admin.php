@@ -1,8 +1,9 @@
-<?php //decir que es un archivo php
-//es una importacion de la clase Route del framework Laravel- Route configuara las rutas de la aplicacion
+<?php // Indica que este es un archivo PHP
+
+// Importación de la clase Route desde el framework Laravel.
+// Route se utiliza para definir y configurar las rutas de la aplicación.
 use Illuminate\Support\Facades\Route;
- 
+
 Route::get('/', function () {
     return view('admin.dashboard');
-})->name ('admin.dashboard')
- 
+})->name('admin.dashboard');
