@@ -1,3 +1,3 @@
 <x-admin-layout>
-    hola desde tu casa xdd
+    hola Edier May xdd
 </x-admin-layout>
