@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// Usa el modelo de Spatie (no App\Models\Role)
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+    /** IDs protegidos: 1..4 */
+    protected function isProtected(Role $role): bool
+    {
+        return (int) $role->id <= 4;
+    }
+
     public function index()
     {
         return view('admin.roles.index');
@@ -24,7 +29,6 @@ class RoleController extends Controller
         $guard = config('auth.defaults.guard', 'web');
 
         $validated = $request->validate([
-            // Único por guard (la tabla tiene índice único (name, guard_name))
             'name' => 'required|string|max:100|unique:roles,name,NULL,id,guard_name,' . $guard,
         ]);
 
@@ -33,16 +37,28 @@ class RoleController extends Controller
             'guard_name' => $guard,
         ]);
 
-        return redirect()
-            ->route('admin.roles.index')
-            ->with('success', '¡Rol creado correctamente!');
-    }
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Rol creado',
+            'text'  => 'El rol se creó correctamente.',
+        ]);
 
-    public function show(string $id) { /* opcional */ }
+        return redirect()->route('admin.roles.index');
+    }
 
     public function edit(string $id)
     {
         $role = Role::findOrFail($id);
+
+        if ($this->isProtected($role)) {
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'Acción no permitida',
+                'text'  => 'Este rol no puede modificarse.',
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
         return view('admin.roles.edit', compact('role'));
     }
 
@@ -50,28 +66,66 @@ class RoleController extends Controller
     {
         $guard = config('auth.defaults.guard', 'web');
 
+        $role = Role::findOrFail($id);
+
+        if ($this->isProtected($role)) {
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'Acción no permitida',
+                'text'  => 'Este rol no puede modificarse.',
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
         $request->validate([
-            'name' => 'required|string|max:100|unique:roles,name,' . $id . ',id,guard_name,' . $guard,
+            'name' => 'required|string|max:100|unique:roles,name,' . $role->id . ',id,guard_name,' . $guard,
         ]);
 
-        $role = Role::findOrFail($id);
+        if ($role->name === $request->name) {
+            session()->flash('swal', [
+                'icon'  => 'info',
+                'title' => 'Sin cambios',
+                'text'  => 'No se detectaron modificaciones.',
+            ]);
+            return redirect()->route('admin.roles.edit', $role);
+        }
+
         $role->update([
             'name'       => $request->input('name'),
-            'guard_name' => $guard, // mantener coherencia
+            'guard_name' => $guard,
         ]);
 
-        return redirect()
-            ->route('admin.roles.index')
-            ->with('success', '¡Rol actualizado correctamente!');
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Rol actualizado',
+            'text'  => 'El rol se actualizó correctamente.',
+        ]);
+
+        return redirect()->route('admin.roles.index');
     }
 
     public function destroy(string $id)
     {
         $role = Role::findOrFail($id);
+
+        if ($this->isProtected($role)) {
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'Acción no permitida',
+                'text'  => 'Este rol no se puede eliminar.',
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
+        $name = $role->name;
         $role->delete();
 
-        return redirect()
-            ->route('admin.roles.index')
-            ->with('success', 'Rol eliminado correctamente.');
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Rol eliminado',
+            'text'  => "«{$name}» se eliminó correctamente.",
+        ]);
+
+        return redirect()->route('admin.roles.index');
     }
 }
