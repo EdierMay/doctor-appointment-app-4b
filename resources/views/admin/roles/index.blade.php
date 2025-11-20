@@ -20,6 +20,6 @@
     </x-slot>
 
     {{-- Tabla de roles --}}
-    @livewire('admin.datatables.role-table')
+    @livewire('admin.data-tables.role-table')
 
 </x-admin-layout>
