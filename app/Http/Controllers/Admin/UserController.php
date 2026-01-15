@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::paginate(10); // Mantener paginación si quieres
+        $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -24,22 +24,35 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // VALIDACIÓN
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|exists:roles,id',
+
+            // CAMPOS OBLIGATORIOS EN LA BD
+            'id_number' => 'required|string|max:20',
+            'phone' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
         ]);
 
+        // CREAR USUARIO
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+
+            'id_number' => $request->id_number,
+            'phone' => $request->phone,
+            'address' => $request->address,
         ]);
 
+        // ASIGNAR ROL
         $role = Role::find($request->role);
         $user->assignRole($role);
 
+        // MENSAJE
         session()->flash('swal', [
             'icon' => 'success',
             'title' => 'Usuario creado correctamente',
@@ -57,27 +70,40 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // VALIDACIÓN
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
             'role' => 'required|exists:roles,id',
+
+            // CAMPOS OBLIGATORIOS EN LA BD
+            'id_number' => 'required|string|max:20',
+            'phone' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
         ]);
 
+        // ACTUALIZAR DATOS
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'id_number' => $request->id_number,
+            'phone' => $request->phone,
+            'address' => $request->address,
         ]);
 
+        // CAMBIAR CONTRASEÑA SI SE ENVIÓ
         if ($request->filled('password')) {
             $user->update([
                 'password' => Hash::make($request->password),
             ]);
         }
 
+        // ACTUALIZAR ROL
         $role = Role::find($request->role);
         $user->syncRoles([$role->name]);
 
+        // MENSAJE
         session()->flash('swal', [
             'icon' => 'success',
             'title' => 'Usuario actualizado correctamente',
@@ -89,7 +115,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // Evitar eliminar al usuario autenticado
+        // EVITAR ELIMINAR AL USUARIO AUTENTICADO
         if ($user->id === auth()->id()) {
             session()->flash('swal', [
                 'icon' => 'error',
