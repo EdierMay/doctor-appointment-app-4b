@@ -18,7 +18,7 @@
                     name="name"
                     value="{{ old('name') }}"
                     required
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -31,7 +31,7 @@
                     name="email"
                     value="{{ old('email') }}"
                     required
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('email') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -44,7 +44,7 @@
                     name="password"
                     required
                     placeholder="Mínimo 6 caracteres"
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('password') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -56,7 +56,7 @@
                     type="password"
                     name="password_confirmation"
                     required
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
             </div>
 
@@ -67,9 +67,10 @@
                     type="text"
                     name="id_number"
                     value="{{ old('id_number') }}"
-                    placeholder="Ej. 123456789"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('id_number') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Teléfono --}}
@@ -79,9 +80,10 @@
                     type="text"
                     name="phone"
                     value="{{ old('phone') }}"
-                    placeholder="Ej. 123456789"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('phone') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Dirección --}}
@@ -91,19 +93,16 @@
                     type="text"
                     name="address"
                     value="{{ old('address') }}"
-                    placeholder="Ej. Calle 123"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('address') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Rol --}}
             <div>
                 <label class="block text-sm font-medium mb-1">Rol</label>
-                <select
-                    name="role"
-                    required
-                    class="w-full border rounded-lg px-3 py-2 bg-white"
-                >
+                <select name="role" required class="w-full border rounded-lg px-3 py-2 bg-white">
                     <option value="">Seleccione un rol</option>
                     @foreach($roles as $role)
                         <option value="{{ $role->id }}" @selected(old('role') == $role->id)>
@@ -121,9 +120,8 @@
                     Cancelar
                 </a>
 
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Guardar
                 </button>
             </div>

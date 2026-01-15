@@ -19,7 +19,7 @@
                     name="name"
                     value="{{ old('name', $user->name) }}"
                     required
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('name') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -32,23 +32,24 @@
                     name="email"
                     value="{{ old('email', $user->email) }}"
                     required
-                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('email') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- (Opcional) Cambiar contraseña --}}
+            {{-- Nueva contraseña (opcional) --}}
             <div>
                 <label class="block text-sm font-medium mb-1">Nueva contraseña (opcional)</label>
                 <input
                     type="password"
                     name="password"
-                    placeholder="Déjala vacía si no vas a cambiarla"
+                    placeholder="Déjala vacía si no deseas cambiarla"
                     class="w-full border rounded-lg px-3 py-2"
                 >
                 @error('password') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Confirmar contraseña --}}
             <div>
                 <label class="block text-sm font-medium mb-1">Confirmar nueva contraseña</label>
                 <input
@@ -65,8 +66,10 @@
                     type="text"
                     name="id_number"
                     value="{{ old('id_number', $user->id_number) }}"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('id_number') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Teléfono --}}
@@ -76,8 +79,10 @@
                     type="text"
                     name="phone"
                     value="{{ old('phone', $user->phone) }}"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('phone') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Dirección --}}
@@ -87,8 +92,10 @@
                     type="text"
                     name="address"
                     value="{{ old('address', $user->address) }}"
+                    required
                     class="w-full border rounded-lg px-3 py-2"
                 >
+                @error('address') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Rol --}}
@@ -97,7 +104,6 @@
                 @php
                     $currentRoleId = $user->roles->first()?->id;
                 @endphp
-
                 <select name="role" required class="w-full border rounded-lg px-3 py-2 bg-white">
                     <option value="">Seleccione un rol</option>
                     @foreach($roles as $role)
