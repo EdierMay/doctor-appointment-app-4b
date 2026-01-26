@@ -24,32 +24,33 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // VALIDACIÓN
-        $request->validate([
-            'name' => 'required|string|max:255',
+        // VALIDACIÓN (mejorada)
+        $data = $request->validate([
+            'name' => 'required|string|min:3|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
+
+            // tu form usa "role" (id del role)
             'role' => 'required|exists:roles,id',
 
-            // CAMPOS OBLIGATORIOS EN LA BD
-            'id_number' => 'required|string|max:20',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
+            // CAMPOS
+            'id_number' => 'required|string|min:5|max:20|regex:/^[A-Za-z0-9\-]+$/|unique:users,id_number',
+            'phone' => 'nullable|digits_between:7,15',
+            'address' => 'nullable|string|min:3|max:255',
         ]);
 
         // CREAR USUARIO
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-
-            'id_number' => $request->id_number,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'id_number' => $data['id_number'],
+            'phone' => $data['phone'] ?? null,
+            'address' => $data['address'] ?? null,
         ]);
 
-        // ASIGNAR ROL
-        $role = Role::find($request->role);
+        // ASIGNAR ROL (seguro)
+        $role = Role::findOrFail($data['role']);
         $user->assignRole($role);
 
         // MENSAJE
@@ -70,38 +71,44 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        // VALIDACIÓN
-        $request->validate([
-            'name' => 'required|string|max:255',
+        // Reglas base
+        $rules = [
+            'name' => 'required|string|min:3|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:6|confirmed',
+
+            // tu form usa "role" (id del role)
             'role' => 'required|exists:roles,id',
 
-            // CAMPOS OBLIGATORIOS EN LA BD
-            'id_number' => 'required|string|max:20',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
-        ]);
+            'id_number' => 'required|string|min:5|max:20|regex:/^[A-Za-z0-9\-]+$/|unique:users,id_number,' . $user->id,
+            'phone' => 'nullable|digits_between:7,15',
+            'address' => 'nullable|string|min:3|max:255',
+        ];
+
+        // Validar contraseña solo si se manda
+        if ($request->filled('password')) {
+            $rules['password'] = 'required|string|min:8|confirmed';
+        }
+
+        $data = $request->validate($rules);
 
         // ACTUALIZAR DATOS
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'id_number' => $request->id_number,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'id_number' => $data['id_number'],
+            'phone' => $data['phone'] ?? null,
+            'address' => $data['address'] ?? null,
         ]);
 
         // CAMBIAR CONTRASEÑA SI SE ENVIÓ
         if ($request->filled('password')) {
-            $user->update([
-                'password' => Hash::make($request->password),
-            ]);
+            $user->password = Hash::make($data['password']);
+            $user->save();
         }
 
-        // ACTUALIZAR ROL
-        $role = Role::find($request->role);
-        $user->syncRoles([$role->name]);
+        // ACTUALIZAR ROL (mejor que syncRoles por name)
+        $role = Role::findOrFail($data['role']);
+        $user->syncRoles([$role]);
 
         // MENSAJE
         session()->flash('swal', [
@@ -125,13 +132,25 @@ class UserController extends Controller
             return redirect()->route('admin.users.index');
         }
 
-        $user->delete();
+        try {
+            // Quitar roles (buena práctica)
+            $user->roles()->detach();
 
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => 'Usuario eliminado correctamente',
-            'text' => 'El usuario ha sido eliminado exitosamente',
-        ]);
+            // Eliminar usuario
+            $user->delete();
+
+            session()->flash('swal', [
+                'icon' => 'success',
+                'title' => 'Usuario eliminado correctamente',
+                'text' => 'El usuario ha sido eliminado exitosamente',
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('swal', [
+                'icon' => 'error',
+                'title' => 'Error',
+                'text' => 'No se pudo eliminar el usuario. Por favor, intenta nuevamente.',
+            ]);
+        }
 
         return redirect()->route('admin.users.index');
     }

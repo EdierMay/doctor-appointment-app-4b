@@ -3,7 +3,7 @@
     $isProtected = (int) $role->id <= 4;
 @endphp
 
-<div class="flex items-center space-x-2">
+<div class="flex items-center gap-2">
     {{-- Editar --}}
     @if($isProtected)
         <button type="button"
@@ -12,14 +12,16 @@
                 title:'Acción no permitida',
                 text:'Este rol no puede modificarse.'
             })"
-            class="inline-flex items-center px-2.5 py-1.5 bg-blue-400 text-white rounded cursor-not-allowed"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200"
             title="Rol protegido">
-            <i class="fa-solid fa-pen-to-square"></i>
+            <i class="fa-solid fa-pen-to-square text-lg"></i>
         </button>
     @else
-        <x-wire-button href="{{ route('admin.roles.edit', $role) }}" blue xs title="Editar">
-            <i class="fa-solid fa-pen-to-square"></i>
-        </x-wire-button>
+        <a href="{{ route('admin.roles.edit', $role) }}"
+           class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+           title="Editar">
+            <i class="fa-solid fa-pen-to-square text-lg"></i>
+        </a>
     @endif
 
     {{-- Eliminar --}}
@@ -30,44 +32,43 @@
                 title:'Acción no permitida',
                 text:'Este rol no se puede eliminar.'
             })"
-            class="inline-flex items-center px-2.5 py-1.5 bg-red-400 text-white rounded cursor-not-allowed"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-100 text-red-700 hover:bg-red-200"
             title="Rol protegido">
-            <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-trash text-lg"></i>
         </button>
     @else
-        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="delete-form inline">
+        <form action="{{ route('admin.roles.destroy', $role) }}"
+              method="POST"
+              class="inline role-delete-form">
             @csrf
             @method('DELETE')
-            <x-wire-button type="submit" red xs title="Eliminar">
-                <i class="fa-solid fa-trash"></i>
-            </x-wire-button>
+            <button type="submit"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                    title="Eliminar">
+                <i class="fa-solid fa-trash text-lg"></i>
+            </button>
         </form>
     @endif
 </div>
 
-{{-- Script para confirmación de eliminación --}}
+@once
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('.delete-form');
-    forms.forEach(form => {
+    document.querySelectorAll('.role-delete-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const roleName = "{{ $role->name }}"; // muestra el nombre del rol
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: `Se eliminará el rol "${roleName}". Esta acción no se puede deshacer.`,
+                text: 'Se eliminará este rol. Esta acción no se puede deshacer.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+                if (result.isConfirmed) form.submit();
             });
         });
     });
 });
 </script>
+@endonce
