@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PatientController;
 
 // Redirige la raíz al prefijo admin
 Route::redirect('/', '/admin');
@@ -18,7 +19,7 @@ Route::middleware([
 
     // Dashboard de administrador
     Route::get('/dashboard', function () {
-        return view('admin.dashboard'); // resources/views/admin/dashboard.blade.php
+        return view('admin.dashboard');
     })->name('dashboard');
 
     // CRUD de Roles
@@ -26,4 +27,7 @@ Route::middleware([
 
     // CRUD de Usuarios
     Route::resource('users', UserController::class);
+
+    // ✅ CRUD de Pacientes (ESTO ARREGLA TU ERROR)
+    Route::resource('patients', PatientController::class);
 });

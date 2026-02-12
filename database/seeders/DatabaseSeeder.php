@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         // Llamar seeders
         $this->call([
             RoleSeeder::class,
+            BloodTypeSeeder::class, // <-- Primero el catálogo de sangre
             UserSeeder::class, // <-- YA ESTÁ CORRECTO
         ]);
     }

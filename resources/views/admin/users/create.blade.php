@@ -118,16 +118,16 @@
                 {{-- Rol (ocupa 2 columnas) --}}
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium mb-1">Rol</label>
-                    <select name="role" required class="w-full border rounded-lg px-3 py-2 bg-white">
+                    <select name="role_id" required class="w-full border rounded-lg px-3 py-2 bg-white">
                         <option value="">Seleccione un rol</option>
                         @foreach($roles as $role)
-                            <option value="{{ $role->id }}" @selected(old('role') == $role->id)>
+                            <option value="{{ $role->id }}" @selected(old('role_id') == $role->id)>
                                 {{ $role->name }}
                             </option>
                         @endforeach
                     </select>
                     <p class="text-xs text-gray-500 mt-1">Define los permisos y accesos del usuario</p>
-                    @error('role') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                    @error('role_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                 </div>
 
             </div>

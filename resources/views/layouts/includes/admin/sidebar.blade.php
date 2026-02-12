@@ -1,5 +1,5 @@
 @php
-    // Arreglo de iconos y enlaces
+    // Arreglo de iconos y enlaces actualizado
     $links = [
         [
             'name' => 'Dashboard',
@@ -22,6 +22,13 @@
             'href' => route('admin.users.index'),
             'active' => request()->routeIs('admin.users.*'),
         ],
+        // Nuevo apartado de Pacientes
+        [
+            'name' => 'Pacientes',
+            'icon' => 'fa-solid fa-user-injured', 
+            'href' => route('admin.patients.index'),
+            'active' => request()->routeIs('admin.patients.*'),
+        ],
     ];
 @endphp
 
@@ -30,16 +37,14 @@
         <ul class="space-y-2 font-medium">
             @foreach ($links as $link)
                 <li>
-                    {{-- Header --}}
                     @isset($link['header'])
                         <div class="px-2 py-2 text-xs font-semibold text-gray-500 uppercase">
                             {{ $link['header'] }}
                         </div>
                     @else
-                        {{-- Enlace simple --}}
                         <a href="{{$link['href']}}"
-                           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{$link['active'] ? 'bg-gray-100' : ''}}">
-                            <span class="w-6 h-6 inline-flex justify-center items-center text-gray-500">
+                           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{$link['active'] ? 'bg-gray-100 dark:bg-gray-700' : ''}}">
+                            <span class="w-6 h-6 inline-flex justify-center items-center text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white">
                                 <i class="{{$link['icon']}}"></i>
                             </span>
                             <span class="ms-3">{{ $link['name'] }}</span>

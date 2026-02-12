@@ -107,16 +107,16 @@
                     @php
                         $currentRoleId = $user->roles->first()?->id;
                     @endphp
-                    <select name="role" required class="w-full border rounded-lg px-3 py-2 bg-white">
+                    <select name="role_id" required class="w-full border rounded-lg px-3 py-2 bg-white">
                         <option value="">Seleccione un rol</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->id }}"
-                                @selected(old('role', $currentRoleId) == $role->id)>
+                                @selected(old('role_id', $currentRoleId) == $role->id)>
                                 {{ $role->name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('role') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                    @error('role_id') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                 </div>
 
             </div>
