@@ -66,28 +66,32 @@
         </script>
     @endif
 
-    {{-- Confirmación al eliminar --}}
+    {{-- Confirmación al eliminar (delegada para funcionar con Livewire / tablas dinámicas) --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const forms = document.querySelectorAll('.delete-form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        text: "Esta acción no se puede revertir",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Sí, eliminar',
-                        cancelButtonText: 'Cancelar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+
+            // soporta tanto .delete-form como .user-delete-form
+            if (!form.classList || (!form.classList.contains('delete-form') && !form.classList.contains('user-delete-form'))) {
+                return;
+            }
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede revertir",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically to bypass the preventDefault above
+                    form.submit();
+                }
             });
         });
     </script>

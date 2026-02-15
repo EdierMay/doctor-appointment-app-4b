@@ -32,16 +32,17 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
+        // Agregamos max:255 para que coincida con la validación de edición
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id|unique:patients,user_id',
             'blood_type_id' => 'nullable|exists:blood_types,id',
-            'allergies' => 'nullable|string',
-            'chronic_conditions' => 'nullable|string',
-            'surgical_history' => 'nullable|string',
-            'family_history' => 'nullable|string',
-            'observations' => 'nullable|string',
+            'allergies' => 'nullable|string|max:255',
+            'chronic_conditions' => 'nullable|string|max:255',
+            'surgical_history' => 'nullable|string|max:255',
+            'family_history' => 'nullable|string|max:255',
+            'observations' => 'nullable|string|max:500', // Este lo dejamos un poco más amplio
             'emergency_contact_name' => 'nullable|string|max:255',
-            'emergency_contact_phone' => 'nullable|string|max:20',
+            'emergency_contact_phone' => 'nullable|string|max:10',
             'emergency_contact_relationship' => 'nullable|string|max:255',
         ]);
 
@@ -77,15 +78,16 @@ class PatientController extends Controller
      */
     public function update(Request $request, Patient $patient)
     {
+        // AQUI ESTABA EL DETALLE: Se agregó |max:255 para forzar el error
         $validated = $request->validate([
             'blood_type_id' => 'nullable|exists:blood_types,id',
-            'allergies' => 'nullable|string',
-            'chronic_conditions' => 'nullable|string',
-            'surgical_history' => 'nullable|string',
-            'family_history' => 'nullable|string',
-            'observations' => 'nullable|string',
+            'allergies' => 'nullable|string|max:255',
+            'chronic_conditions' => 'nullable|string|max:255',
+            'surgical_history' => 'nullable|string|max:255',
+            'family_history' => 'nullable|string|max:255',
+            'observations' => 'nullable|string|max:500',
             'emergency_contact_name' => 'nullable|string|max:255',
-            'emergency_contact_phone' => 'nullable|string|max:20',
+            'emergency_contact_phone' => 'nullable|string|max:10',
             'emergency_contact_relationship' => 'nullable|string|max:255',
         ]);
 
