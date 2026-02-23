@@ -78,11 +78,14 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // Default application locale (forzado a español)
+    'locale' => 'es',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    // Fallback locale when a translation is missing
+    'fallback_locale' => 'es',
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    // Faker locale for generated data
+    'faker_locale' => 'es_ES',
 
     /*
     |--------------------------------------------------------------------------

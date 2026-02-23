@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PatientController;
+use App\Http\Controllers\Admin\DoctorController; // 1. AGREGAMOS EL CONTROLADOR AQUÍ
 
 // Redirige la raíz al prefijo admin
 Route::redirect('/', '/admin');
@@ -28,6 +29,9 @@ Route::middleware([
     // CRUD de Usuarios
     Route::resource('users', UserController::class);
 
-    // ✅ CRUD de Pacientes (ESTO ARREGLA TU ERROR)
+    // CRUD de Pacientes
     Route::resource('patients', PatientController::class);
+
+    // ✅ NUEVO: CRUD de Doctores (ESTO HACE APARECER EL BOTÓN)
+    Route::resource('doctors', DoctorController::class);
 });

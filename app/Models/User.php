@@ -21,8 +21,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -35,8 +33,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -47,17 +43,13 @@ class User extends Authenticatable
 
     /**
      * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
      */
     protected $appends = [
         'profile_photo_url',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * The attributes that should be cast.
      */
     protected function casts(): array
     {
@@ -69,9 +61,19 @@ class User extends Authenticatable
 
     /**
      * Relación uno a uno con Paciente
+     * Un usuario puede tener un perfil de paciente.
      */
     public function patient()
     {
         return $this->hasOne(Patient::class);
+    }
+
+    /**
+     * Relación uno a uno con Doctor
+     * Un usuario puede tener un perfil de doctor.
+     */
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
     }
 }

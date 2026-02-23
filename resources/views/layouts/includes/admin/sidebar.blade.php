@@ -22,14 +22,26 @@
             'href' => route('admin.users.index'),
             'active' => request()->routeIs('admin.users.*'),
         ],
-        // Nuevo apartado de Pacientes
+        // Apartado de Pacientes
         [
             'name' => 'Pacientes',
             'icon' => 'fa-solid fa-user-injured', 
             'href' => route('admin.patients.index'),
             'active' => request()->routeIs('admin.patients.*'),
         ],
+        // NUEVO: Apartado de Doctores (solo si la ruta existe)
+        // Se agrega condicionalmente más abajo para evitar errores cuando la ruta no está registrada
     ];
+    
+    // Agregar enlace a Doctores solo si la ruta existe
+    if (\Illuminate\Support\Facades\Route::has('admin.doctors.index')) {
+        $links[] = [
+            'name' => 'Doctores',
+            'icon' => 'fa-solid fa-user-md',
+            'href' => route('admin.doctors.index'),
+            'active' => request()->routeIs('admin.doctors.*'),
+        ];
+    }
 @endphp
 
 <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">

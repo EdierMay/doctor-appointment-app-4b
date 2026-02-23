@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Patient;
+use App\Models\Doctor;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -53,13 +54,19 @@ class UserController extends Controller
         // Asignar rol
         $user->roles()->sync($request->role_id);
 
-        // Crear expediente si es Paciente
+        // Crear expediente si es Paciente o Doctor (comparación insensible)
         $role = Role::find($request->role_id);
 
-        if ($role && strtolower($role->name) === 'paciente') {
-            Patient::create([
-                'user_id' => $user->id,
-            ]);
+        if ($role) {
+            $roleName = strtolower($role->name);
+            if ($roleName === 'paciente') {
+                Patient::create(['user_id' => $user->id]);
+            }
+
+            if ($roleName === 'doctor') {
+                // Crear perfil médico si no existe
+                Doctor::firstOrCreate(['user_id' => $user->id]);
+            }
         }
 
         return redirect()
@@ -124,21 +131,30 @@ class UserController extends Controller
 
         $user->roles()->sync($request->role_id);
 
-        // Crear expediente si ahora es Paciente (comparación insensible)
-        if ($newRole && strtolower($newRole->name) === 'paciente' && !$user->patient) {
-            Patient::create([
-                'user_id' => $user->id,
-            ]);
+        // Manejar creación/eliminación de perfiles Paciente/Doctor según rol nuevo
+        if ($newRole) {
+            $newName = strtolower($newRole->name);
+
+            if ($newName === 'paciente' && !$user->patient) {
+                Patient::create(['user_id' => $user->id]);
+            }
+
+            if ($newName === 'doctor' && !$user->doctor) {
+                Doctor::firstOrCreate(['user_id' => $user->id]);
+            }
         }
 
-        // Eliminar expediente si deja de ser Paciente
-        if (
-            $oldRole &&
-            $oldRole->name === 'Paciente' &&
-            $newRole &&
-            $newRole->name !== 'Paciente'
-        ) {
-            $user->patient?->delete();
+        // Si dejó de ser Paciente o Doctor, eliminar perfil correspondiente
+        if ($oldRole) {
+            $oldName = strtolower($oldRole->name);
+
+            if ($oldName === 'paciente' && ($newRole == null || strtolower($newRole->name) !== 'paciente')) {
+                $user->patient?->delete();
+            }
+
+            if ($oldName === 'doctor' && ($newRole == null || strtolower($newRole->name) !== 'doctor')) {
+                $user->doctor?->delete();
+            }
         }
 
         return redirect()
