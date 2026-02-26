@@ -32,7 +32,6 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
-        // Agregamos max:255 para que coincida con la validación de edición
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id|unique:patients,user_id',
             'blood_type_id' => 'nullable|exists:blood_types,id',
@@ -40,7 +39,7 @@ class PatientController extends Controller
             'chronic_conditions' => 'nullable|string|max:255',
             'surgical_history' => 'nullable|string|max:255',
             'family_history' => 'nullable|string|max:255',
-            'observations' => 'nullable|string|max:500', // Este lo dejamos un poco más amplio
+            'observations' => 'nullable|string|max:500', 
             'emergency_contact_name' => 'nullable|string|max:255',
             'emergency_contact_phone' => 'nullable|string|max:10',
             'emergency_contact_relationship' => 'nullable|string|max:255',
@@ -78,17 +77,18 @@ class PatientController extends Controller
      */
     public function update(Request $request, Patient $patient)
     {
-        // AQUI ESTABA EL DETALLE: Se agregó |max:255 para forzar el error
+        // 🔥 AQUÍ ESTÁ LA MAGIA: Cambiamos 'nullable' a 'required' en algunos campos 
+        // para forzar que el formulario falle si lo envías vacío.
         $validated = $request->validate([
-            'blood_type_id' => 'nullable|exists:blood_types,id',
-            'allergies' => 'nullable|string|max:255',
-            'chronic_conditions' => 'nullable|string|max:255',
-            'surgical_history' => 'nullable|string|max:255',
-            'family_history' => 'nullable|string|max:255',
-            'observations' => 'nullable|string|max:500',
-            'emergency_contact_name' => 'nullable|string|max:255',
+            'blood_type_id' => 'required|exists:blood_types,id',
+            'allergies' => 'nullable|string|max:100',
+            'chronic_conditions' => 'nullable|string|max:100',
+            'surgical_history' => 'required|string|max:100',
+            'family_history' => 'nullable|string|max:100',
+            'observations' => 'nullable|string|max:200',
+            'emergency_contact_name' => 'required|string|max:100',
             'emergency_contact_phone' => 'nullable|string|max:10',
-            'emergency_contact_relationship' => 'nullable|string|max:255',
+            'emergency_contact_relationship' => 'nullable|string|max:100',
         ]);
 
         $patient->update($validated);
