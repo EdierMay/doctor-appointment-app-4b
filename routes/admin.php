@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PatientController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\InsuranceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +29,6 @@ Route::resource('patients', PatientController::class);
 
 // Gestión de doctores
 Route::resource('doctors', DoctorController::class);
+
+// Gestión de aseguradoras
+Route::resource('insurances', InsuranceController::class);
