@@ -27,9 +27,14 @@ class Doctor extends Model
     }
 
     // Relación con MedicalSpecialty
-    public function specialty()
+    public function medicalSpecialty()
     {
         return $this->belongsTo(MedicalSpecialty::class, 'medical_specialty_id');
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 
     // Compatibilidad con vistas que usan $doctor->cedula

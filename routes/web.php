@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PatientController;
-use App\Http\Controllers\Admin\DoctorController; // 1. AGREGAMOS EL CONTROLADOR AQUÍ
+use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\AppointmentController;
 
 // Redirige la raíz al prefijo admin
 Route::redirect('/', '/admin');
@@ -34,4 +35,10 @@ Route::middleware([
 
     // ✅ NUEVO: CRUD de Doctores (ESTO HACE APARECER EL BOTÓN)
     Route::resource('doctors', DoctorController::class);
+    
+    // Vista de horarios del doctor
+    Route::get('doctors/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctors.schedules');
+
+    // CRUD de Citas
+    Route::resource('appointments', AppointmentController::class);
 });

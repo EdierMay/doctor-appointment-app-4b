@@ -10,6 +10,12 @@
        title="Ver perfil del médico">
         <i class="fa-solid fa-eye text-lg"></i>
     </a>
+    {{-- Vista de Horarios (Schedules) --}}
+    <a href="{{ route('admin.doctors.schedules', $doctor) }}" 
+       class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-500 text-white hover:bg-green-600 shadow-sm transition-colors" 
+       title="Ver horarios del médico">
+        <i class="fa-solid fa-clock text-lg"></i>
+    </a>
 
     {{-- Editar (Edit) --}}
     {{-- Permite modificar la especialidad, cédula y biografía --}}

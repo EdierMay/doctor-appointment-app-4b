@@ -16,7 +16,7 @@ class DoctorTable extends DataTableComponent
     {
         // Nota: Confirma que la relación en tu modelo Doctor se llame 'specialty' 
         // y no 'medicalSpecialty' como vimos en el controlador anterior.
-        return Doctor::query()->with(['user', 'specialty']);
+        return Doctor::query()->with(['user', 'medicalSpecialty']);
     }
 
     public function configure(): void
@@ -38,7 +38,7 @@ class DoctorTable extends DataTableComponent
                 ->sortable()
                 ->searchable(),
                 
-            Column::make("Especialidad", "specialty.name")
+            Column::make("Especialidad", "medicalSpecialty.name")
                 ->sortable()
                 ->searchable(),
                 

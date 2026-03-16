@@ -95,4 +95,16 @@ class DoctorController extends Controller
                 'text' => 'Perfil médico eliminado.'
             ]);
     }
+
+    public function schedules(Doctor $doctor)
+    {
+        // Traer las citas del doctor ordenadas por fecha y hora
+        $appointments = $doctor->appointments()
+            ->with('patient.user')
+            ->orderBy('date', 'desc')
+            ->orderBy('start_time', 'asc')
+            ->get();
+            
+        return view('admin.doctors.schedules', compact('doctor', 'appointments'));
+    }
 }

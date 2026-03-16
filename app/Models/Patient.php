@@ -31,6 +31,11 @@ class Patient extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     /**
      * Relación: el paciente pertenece a un tipo de sangre
      */

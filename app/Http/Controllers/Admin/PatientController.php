@@ -77,7 +77,7 @@ class PatientController extends Controller
      */
     public function update(Request $request, Patient $patient)
     {
-        // 🔥 AQUÍ ESTÁ LA MAGIA: Cambiamos 'nullable' a 'required' en algunos campos 
+        // 🔥  Cambiamos 'nullable' a 'required' en algunos campos 
         // para forzar que el formulario falle si lo envías vacío.
         $validated = $request->validate([
             'blood_type_id' => 'required|exists:blood_types,id',
