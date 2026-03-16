@@ -3,10 +3,10 @@
     <div class="px-4 py-3 flex justify-between items-center">
 
         {{-- Logo --}}
-        <div class="flex items-center gap-2">
-            <img src="/images/Manjaro-logo.svg.png" class="h-8" alt="HouseMD">
-            <span class="text-xl font-semibold">HouseMD</span>
-        </div>
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 ms-2 md:me-24">
+            <img src="/images/Manjaro-logo.svg.png" class="h-8" alt="HouseMD" />
+            <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">HouseMD</span>
+        </a>
 
         {{-- USER DROPDOWN --}}
         <div class="relative">

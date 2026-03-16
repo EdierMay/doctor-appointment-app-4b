@@ -3,7 +3,7 @@
     $links = [
         [
             'name' => 'Dashboard',
-            'icon' => 'fa-solid fa-gauge',
+            'icon' => 'fa-solid fa-chart-pie',
             'href' => route('admin.dashboard'),
             'active' => request()->routeIs('admin.dashboard')
         ],
@@ -11,7 +11,7 @@
             'header' => 'Gestión',
         ],
         [
-            'name' => 'Roles y permisos',
+            'name' => 'Roles y Permisos',
             'icon' => 'fa-solid fa-shield-halved',
             'href' => route('admin.roles.index'),
             'active' => request()->routeIs('admin.roles.*'),
@@ -42,6 +42,32 @@
             'active' => request()->routeIs('admin.doctors.*'),
         ];
     }
+    
+    // Apartado de Citas Médicas
+    if (\Illuminate\Support\Facades\Route::has('admin.appointments.index')) {
+        $links[] = [
+            'name' => 'Citas médicas',
+            'icon' => 'fa-regular fa-calendar-check',
+            'href' => route('admin.appointments.index'),
+            'active' => request()->routeIs('admin.appointments.*'),
+        ];
+    }
+
+    // Apartado de Calendario (Ejemplo / Puedes ajustarlo después)
+    $links[] = [
+        'name' => 'Calendario',
+        'icon' => 'fa-solid fa-table-cells',
+        'href' => '#',
+        'active' => false,
+    ];
+
+    // Apartado de Soporte (Ejemplo / Puedes ajustarlo después)
+    $links[] = [
+        'name' => 'Soporte',
+        'icon' => 'fa-solid fa-headset',
+        'href' => '#',
+        'active' => false,
+    ];
 @endphp
 
 <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
