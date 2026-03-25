@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Models\Doctor;
+// 1. Añadimos las clases para el PDF y el Correo
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AppointmentReceipt;
 
 class AppointmentController extends Controller
 {
@@ -36,13 +40,26 @@ class AppointmentController extends Controller
         $data['duration'] = 15;
         $data['status'] = 1;
 
-        Appointment::create($data);
+        // 2. Guardamos la cita en una variable ($appointment) en lugar de solo crearla
+        $appointment = Appointment::create($data);
+
+        // Opcional: Cargamos las relaciones para que el PDF sepa el nombre del doctor y paciente
+        $appointment->load('patient.user', 'doctor.user');
+
+        // 3. Generamos el PDF usando la vista que creaste hace un momento
+        $pdf = Pdf::loadView('pdf.receipt', ['appointment' => $appointment]);
+
+        // 4. Enviamos el correo. 
+        // Para la tarea, puedes poner tu correo personal aquí o el de Mailtrap para la demostración del video.
+        $correoDestino = 'edierjairmaypech@gmail.com'; 
+        
+        Mail::to($correoDestino)->send(new AppointmentReceipt($appointment, $pdf->output()));
 
         return redirect()->route('admin.appointments.index')
             ->with('swal', [
                 'icon'  => 'success',
                 'title' => 'Cita Creada',
-                'text'  => 'La cita ha sido programada exitosamente.'
+                'text'  => 'La cita ha sido programada y el comprobante enviado exitosamente.'
             ]);
     }
 }
