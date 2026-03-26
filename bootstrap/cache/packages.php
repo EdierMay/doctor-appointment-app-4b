@@ -25,6 +25,13 @@
       0 => 'BladeUI\\Icons\\BladeIconsServiceProvider',
     ),
   ),
+  'codezero/browser-locale' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'CodeZero\\BrowserLocale\\Laravel\\BrowserLocaleServiceProvider',
+    ),
+  ),
   'laravel-lang/actions' => 
   array (
     'providers' => 
@@ -153,6 +160,17 @@
     'providers' => 
     array (
       0 => 'Livewire\\LivewireServiceProvider',
+    ),
+  ),
+  'maatwebsite/excel' => 
+  array (
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
   'nesbot/carbon' => 

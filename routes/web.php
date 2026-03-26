@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PatientController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\AppointmentController;
+use App\Http\Controllers\Admin\PatientImportController;
 
 // Redirige la raíz al prefijo admin
 Route::redirect('/', '/admin');
@@ -29,6 +30,10 @@ Route::middleware([
 
     // CRUD de Usuarios
     Route::resource('users', UserController::class);
+
+    // Importación de pacientes
+    Route::get('patients/import', [PatientImportController::class, 'create'])->name('patients.import');
+    Route::post('patients/import', [PatientImportController::class, 'store'])->name('patients.import.store');
 
     // CRUD de Pacientes
     Route::resource('patients', PatientController::class);
