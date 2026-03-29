@@ -12,6 +12,13 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class PatientsImport implements ToModel, WithHeadingRow
 {
+    protected $historyId;
+
+    public function __construct($historyId = null)
+    {
+        $this->historyId = $historyId;
+    }
+
     /**
     * @param array $row
     *
@@ -59,6 +66,11 @@ class PatientsImport implements ToModel, WithHeadingRow
                 'allergies' => $row['alergias'] ?? null,
             ]
         );
+
+        // Actualizar el progreso en el historial
+        if ($this->historyId) {
+            \App\Models\ImportHistory::where('id', $this->historyId)->increment('processed_rows');
+        }
 
         return null; // Return null because we manually handled the creations to manage relationships
     }

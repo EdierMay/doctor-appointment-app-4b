@@ -27,6 +27,8 @@
         </a>
     </div>
 
+    @livewire('admin.import-history')
+
     {{-- Tabla de pacientes --}}
     @livewire('admin.data-tables.patient-table')
 
