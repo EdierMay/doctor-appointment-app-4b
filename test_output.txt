@@ -1,0 +1,167 @@
+
+  [44;1m INFO [49;22m STDIN
+
+STDIN
+STDIN.
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                    0.02s  
+
+   WARN  Tests\Feature\ApiTokenPermissionsTest
+  - api token permissions can be updated → API support is not enabled.   0.67s  
+
+   FAIL  Tests\Feature\AuthenticationTest
+  ✓ login screen can be rendered                                         0.21s  
+  ⨯ users can authenticate using the login screen                        0.15s  
+  ✓ users cannot authenticate with invalid password                      0.11s  
+
+   PASS  Tests\Feature\BrowserSessionsTest
+  ✓ other browser sessions can be logged out                             0.17s  
+
+   WARN  Tests\Feature\CreateApiTokenTest
+  - api tokens can be created → API support is not enabled.              0.04s  
+
+   PASS  Tests\Feature\DeleteAccountTest
+  ✓ user accounts can be deleted                                         0.15s  
+  ✓ correct password must be provided before account can be deleted      0.15s  
+
+   WARN  Tests\Feature\DeleteApiTokenTest
+  - api tokens can be deleted → API support is not enabled.              0.05s  
+
+   WARN  Tests\Feature\EmailVerificationTest
+  - email verification screen can be rendered → Email verification not…  0.05s  
+  - email can be verified → Email verification not enabled.              0.04s  
+  - email can not verified with invalid hash → Email verification not e… 0.04s  
+
+   FAIL  Tests\Feature\ExampleTest
+  ⨯ it returns a successful response                                     0.10s  
+
+   PASS  Tests\Feature\PasswordConfirmationTest
+  ✓ confirm password screen can be rendered                              0.11s  
+  ✓ password can be confirmed                                            0.12s  
+  ✓ password is not confirmed with invalid password                      0.30s  
+
+   PASS  Tests\Feature\PasswordResetTest
+  ✓ reset password link screen can be rendered                           0.12s  
+  ✓ reset password link can be requested                                 0.31s  
+  ✓ reset password screen can be rendered                                0.33s  
+  ✓ password can be reset with valid token                               0.32s  
+
+   PASS  Tests\Feature\ProfileInformationTest
+  ✓ current profile information is available                             0.14s  
+  ✓ profile information can be updated                                   0.16s  
+
+   FAIL  Tests\Feature\RegistrationTest
+  ✓ registration screen can be rendered                                  0.13s  
+  - registration screen cannot be rendered if support is disabled → Reg… 0.04s  
+  ⨯ new users can register                                               1.20s  
+
+   PASS  Tests\Feature\TwoFactorAuthenticationSettingsTest
+  ✓ two factor authentication can be enabled                             0.25s  
+  ✓ recovery codes can be regenerated                                    0.37s  
+  ✓ two factor authentication can be disabled                            0.22s  
+
+   PASS  Tests\Feature\UpdatePasswordTest
+  ✓ password can be updated                                              0.20s  
+  ✓ current password must be correct                                     0.19s  
+  ✓ new passwords must match                                             0.20s  
+
+   PASS  Tests\Feature\UserCreateDuplicateEmailTest
+  ✓ No permite crear usuario con email duplicado                         0.15s  
+
+   PASS  Tests\Feature\UserCreatePasswordTooShortTest
+  ✓ No permite crear usuario con password demasiado corta                0.12s  
+
+   FAIL  Tests\Feature\UserSelfDeleteTest
+  ⨯ Un usuario no puede eliminarse asi mismo                             0.12s  
+
+   FAIL  Tests\Feature\UserUpdateDuplicateIdNumberTest
+  ⨯ No permite actualizar usuario con id_number duplicado                0.12s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\AuthenticationTest > users…   RouteNotFoundException   
+  Route [dashboard] not defined.
+
+  at vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:528
+    524▕             ! is_null($url = call_user_func($this->missingNamedRouteResolver, $name, $parameters, $absolute))) {
+    525▕             return $url;
+    526▕         }
+    527▕ 
+  ➜ 528▕         throw new RouteNotFoundException("Route [{$name}] not defined.");
+    529▕     }
+    530▕ 
+    531▕     /**
+    532▕      * Get the URL for a given route instance.
+
+      [2m+2 vendor frames [22m
+  3   tests/Feature/AuthenticationTest.php:20
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\ExampleTest > it returns a successful response         
+  Expected response status code [200] but received 302.
+Failed asserting that 302 is identical to 200.
+
+  at tests/Feature/ExampleTest.php:6
+      2▕ 
+      3▕ it('returns a successful response', function () {
+      4▕     $response = $this->get('/');
+      5▕ 
+  ➜   6▕     $response->assertStatus(200);
+      7▕ });
+      8▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\RegistrationTest > new users can register              
+  The user is not authenticated
+Failed asserting that false is true.
+
+  at tests/Feature/RegistrationTest.php:31
+     27▕         'password_confirmation' => 'password',
+     28▕         'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+     29▕     ]);
+     30▕ 
+  ➜  31▕     $this->assertAuthenticated();
+     32▕     $response->assertRedirect(route('dashboard', absolute: false));
+     33▕ })->skip(function () {
+     34▕     return ! Features::enabled(Features::registration());
+     35▕ }, 'Registration support is not enabled.');
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\UserSelfDeleteTest > Un usuario no puede eliminarse…   
+  Expected response status code [201, 301, 302, 303, 307, 308] but received 403.
+Failed asserting that false is true.
+
+  at tests/Feature/UserSelfDeleteTest.php:20
+     16▕     // 3) Simular una petición HTTP DELETE (borrar un usuario)
+     17▕     $response = $this->delete(route('admin.users.destroy', $user));
+     18▕ 
+     19▕     // 4) El controller REDIRIGE, no devuelve 403
+  ➜  20▕     $response->assertRedirect(route('admin.users.index'));
+     21▕ 
+     22▕     // 5) Verificar que el usuario sigue existiendo en la base de datos
+     23▕     $this->assertDatabaseHas('users', [
+     24▕         'id' => $user->id,
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\UserUpdateDuplicateIdNumberTest > No permite actual…   
+  Session missing error: id_number
+Failed asserting that false is true.
+
+The following errors occurred during the last request:
+
+El campo role id es obligatorio.
+
+  at tests/Feature/UserUpdateDuplicateIdNumberTest.php:42
+     38▕         'phone' => $userB->phone,
+     39▕         'address' => $userB->address,
+     40▕     ]);
+     41▕ 
+  ➜  42▕     $response->assertSessionHasErrors(['id_number']);
+     43▕ 
+     44▕     // Confirmar que B NO cambió su id_number
+     45▕     expect(User::find($userB->id)->id_number)->toBe('ID-22222');
+     46▕ });
+
+
+  Tests:    5 failed, 7 skipped, 24 passed (51 assertions)
+  Duration: 7.40s
+
