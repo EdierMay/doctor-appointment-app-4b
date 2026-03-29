@@ -22,6 +22,26 @@ class PatientImportController extends Controller
             $file = $request->file('file');
             $originalName = $file->getClientOriginalName();
             
+            // Check for previous successful imports to prevent duplicates
+            $alreadyExists = \App\Models\ImportHistory::where('file_name', $originalName)
+                                ->whereIn('status', ['Completado', 'Procesando', 'Pendiente'])
+                                ->exists();
+                                
+            if ($alreadyExists) {
+                // Log the duplicate attempt as failed
+                \App\Models\ImportHistory::create([
+                    'file_name' => $originalName . ' (Duplicado)',
+                    'status' => 'Fallido',
+                ]);
+
+                return redirect()->route('admin.patients.index')
+                    ->with('swal', [
+                        'icon' => 'error',
+                        'title' => '¡Archivo duplicado!',
+                        'text' => 'Ya has subido un archivo con el nombre "' . $originalName . '" previamente. Por favor, revisa el historial.',
+                    ]);
+            }
+
             // Save the file temporarily in storage
             $filePath = $file->store('imports', 'local');
 
