@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Patient extends Model
 {
@@ -13,6 +14,7 @@ class Patient extends Model
     protected $fillable = [
         'user_id',
         'blood_type_id',
+        'date_of_birth',
         'allergies',
         'chronic_conditions',
         'surgical_history',

@@ -105,7 +105,7 @@ class UserController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email,' . $user->id,
             'password'  => 'nullable|string|min:8|confirmed',
-            'id_number' => 'required|string|max:20',
+            'id_number' => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/|unique:users,id_number,' . $user->id,
             'phone'     => 'required|string|max:20',
             'address'   => 'required|string|max:255',
             'role_id'   => 'required|exists:roles,id',

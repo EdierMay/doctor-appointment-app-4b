@@ -16,8 +16,8 @@ test('Un usuario no puede eliminarse asi mismo', function () {
     // 3) Simular una petición HTTP DELETE (borrar un usuario)
     $response = $this->delete(route('admin.users.destroy', $user));
 
-    // 4) El controller REDIRIGE, no devuelve 403
-    $response->assertRedirect(route('admin.users.index'));
+    // 4) El controller devuelve 403 Forbidden
+    $response->assertForbidden();
 
     // 5) Verificar que el usuario sigue existiendo en la base de datos
     $this->assertDatabaseHas('users', [
