@@ -32,7 +32,7 @@ test('No permite actualizar usuario con id_number duplicado', function () {
     $response = $this->put(route('admin.users.update', $userB), [
         'name' => $userB->name,
         'email' => $userB->email,
-        'role' => $role->id,
+        'role_id' => $role->id,
 
         'id_number' => 'ID-11111', // duplicado
         'phone' => $userB->phone,
