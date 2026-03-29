@@ -8,8 +8,10 @@ class ImportHistory extends Model
 {
     protected $fillable = [
         'file_name',
+        'file_path',
         'total_rows',
         'processed_rows',
         'status',
+        'error_message',
     ];
 }

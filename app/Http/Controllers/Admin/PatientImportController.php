@@ -14,9 +14,28 @@ class PatientImportController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt,xlsx,xls|max:10240', // Max 10MB
+        ], [
+            'file.mimes' => 'El archivo debe ser de tipo: csv, xlsx, xls.',
+            'file.max' => 'El archivo no debe pesar más de 10MB.',
         ]);
+
+        if ($validator->fails()) {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                \App\Models\ImportHistory::create([
+                    'file_name' => $file->getClientOriginalName(),
+                    'status' => 'Fallido',
+                    'error_message' => $validator->errors()->first('file'),
+                ]);
+            }
+            return back()->with('swal', [
+                'icon' => 'error',
+                'title' => 'Formato Inválido',
+                'text' => $validator->errors()->first('file'),
+            ])->withErrors($validator);
+        }
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -32,13 +51,14 @@ class PatientImportController extends Controller
                 \App\Models\ImportHistory::create([
                     'file_name' => $originalName . ' (Duplicado)',
                     'status' => 'Fallido',
+                    'error_message' => 'Ya has subido un archivo con este nombre previamente.',
                 ]);
 
                 return redirect()->route('admin.patients.index')
                     ->with('swal', [
                         'icon' => 'error',
                         'title' => '¡Archivo duplicado!',
-                        'text' => 'Ya has subido un archivo con el nombre "' . $originalName . '" previamente. Por favor, revisa el historial.',
+                        'text' => 'El archivo "' . $originalName . '" ya fue subido exitosamente o está en proceso.',
                     ]);
             }
 
@@ -48,6 +68,7 @@ class PatientImportController extends Controller
             // Save history log
             $history = \App\Models\ImportHistory::create([
                 'file_name' => $originalName,
+                'file_path' => $filePath,
                 'status' => 'Pendiente',
             ]);
 
@@ -63,5 +84,32 @@ class PatientImportController extends Controller
         }
 
         return back()->withErrors(['file' => 'Error al subir el archivo.']);
+    }
+
+    /**
+     * Descarga la plantilla CSV de ejemplo.
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="plantilla_pacientes.csv"',
+        ];
+        $columns = [
+            'nombre_completo', 'correo', 'telefono', 'fecha_nacimiento', 'tipo_sangre', 'alergias'
+        ];
+        $example = [
+            'Juan Pérez', 'juan.perez@ejemplo.com', '9998887766',
+            '1990-05-15', 'O+', 'Polen, Polvo'
+        ];
+
+        $callback = function () use ($columns, $example) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM UTF-8
+            fputcsv($handle, $columns);
+            fputcsv($handle, $example);
+            fclose($handle);
+        };
+        return response()->stream($callback, 200, $headers);
     }
 }

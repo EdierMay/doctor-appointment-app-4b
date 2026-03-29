@@ -16,14 +16,75 @@
 >
 
     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">
-            Importar Pacientes desde Excel / CSV
-        </h2>
         
-        <p class="text-sm text-gray-600 mb-6">
-            Sube un archivo con los campos: <strong>nombre_completo, correo, telefono, fecha_nacimiento, tipo_sangre, alergias</strong>. 
-            El procesamiento se realizará en segundo plano.
-        </p>
+        <div class="lg:flex lg:justify-between lg:items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    <i class="fa-solid fa-file-arrow-up text-indigo-500 mr-2"></i>
+                    Importación Masiva de Pacientes
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">
+                    Sube un archivo CSV con la información de múltiples pacientes. El procesamiento
+                    se realizará en <strong>segundo plano</strong> para no bloquear el sistema.
+                </p>
+            </div>
+            <div class="mt-4 lg:mt-0 flex space-x-3">
+                <a href="{{ route('admin.patients.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>
+                    Volver
+                </a>
+                <a href="{{ route('admin.patients.import-template') }}" class="inline-flex items-center px-4 py-2 bg-teal-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-teal-700 focus:bg-teal-700 active:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Descargar plantilla CSV
+                </a>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-base font-semibold text-gray-800 mb-3">
+                <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i>
+                Formato requerido del archivo CSV
+            </h2>
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="min-w-full text-xs text-left text-gray-600">
+                    <thead class="bg-gray-50 text-gray-700 uppercase">
+                        <tr>
+                            <th class="px-4 py-2">Columna</th>
+                            <th class="px-4 py-2">Descripción</th>
+                            <th class="px-4 py-2">Obligatorio</th>
+                            <th class="px-4 py-2">Ejemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach ([
+                            ['nombre_completo',        'Nombre completo del paciente',            true,  'Juan Pérez'],
+                            ['correo',                 'Correo electrónico (único)',              true,  'juan@ejemplo.com'],
+                            ['telefono',               'Teléfono de contacto',                    false, '9998887766'],
+                            ['fecha_nacimiento',       'Fecha de Nacimiento (YYYY-MM-DD)',        false, '1990-05-15'],
+                            ['tipo_sangre',            'Tipo de sangre (debe existir en el sistema)', false, 'O+'],
+                            ['alergias',               'Alergias conocidas',                      false, 'Polen, polvo'],
+                        ] as [$col, $desc, $req, $ej])
+                        <tr>
+                            <td class="px-4 py-2 font-mono font-semibold text-indigo-700">{{ $col }}</td>
+                            <td class="px-4 py-2">{{ $desc }}</td>
+                            <td class="px-4 py-2">
+                                @if($req)
+                                    <span class="inline-block bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">Sí</span>
+                                @else
+                                    <span class="inline-block bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full">No</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2 text-gray-500 italic">{{ $ej }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">
+                <i class="fa-solid fa-triangle-exclamation text-amber-400 mr-1"></i>
+                La primera fila debe ser el encabezado exacto. El sistema generará una contraseña o identificador automáticamente de ser necesario.
+            </p>
+        </div>
 
         <form action="{{ route('admin.patients.import.store') }}" method="POST" enctype="multipart/form-data" x-data="{ loading: false, fileName: '' }" @submit="if(fileName){ setTimeout(() => { loading = true }, 50); }">
             @csrf

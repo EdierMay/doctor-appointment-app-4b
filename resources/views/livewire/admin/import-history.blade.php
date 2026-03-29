@@ -48,12 +48,21 @@
                                 @endif
                                 {{ $history->status }}
                             </span>
+                            <button wire:click="deleteHistory({{ $history->id }})" wire:confirm="¿Seguro que deseas eliminar este registro del historial?" class="text-gray-400 hover:text-red-500 focus:outline-none transition" title="Eliminar registro y archivo">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-200 mt-2">
-                        <div class="{{ $barColors[$history->status] ?? 'bg-gray-400' }} h-2.5 rounded-full transition-all duration-500" style="width: {{ $percentage }}%"></div>
-                    </div>
+                    @if($history->status === 'Fallido' && $history->error_message)
+                        <div class="mb-2 mt-1 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100">
+                            <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ $history->error_message }}
+                        </div>
+                    @else
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-200 mt-2">
+                            <div class="{{ $barColors[$history->status] ?? 'bg-gray-400' }} h-2.5 rounded-full transition-all duration-500" style="width: {{ $percentage }}%"></div>
+                        </div>
+                    @endif
                 </li>
             @endforeach
         </ul>

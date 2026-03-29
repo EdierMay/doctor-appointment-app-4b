@@ -34,6 +34,7 @@ Route::middleware([
     // Importación de pacientes
     Route::get('patients/import', [PatientImportController::class, 'create'])->name('patients.import');
     Route::post('patients/import', [PatientImportController::class, 'store'])->name('patients.import.store');
+    Route::get('patients/import/template', [PatientImportController::class, 'downloadTemplate'])->name('patients.import-template');
 
     // CRUD de Pacientes
     Route::resource('patients', PatientController::class);
